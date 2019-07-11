@@ -1,0 +1,37 @@
+#!/bin/bash
+# usage: check_roomtemp -a somehost.net/temp.html
+# temp.html should only contain the temperature value.
+
+MIN_OK=20
+MAX_OK=24
+MIN_WARN=25
+MAX_WARN=28
+
+if [ -z $1 ]; then echo -e 'No arguments given! Exiting.\nUsage: check-roomtemp -a <address>'; exit 3; fi
+
+if [ $1 == "-a" ]; then
+    addr="$2"
+else
+    echo "Usage: check-roomtemp -a <address>"
+    exit 3
+fi
+
+temp=$(curl -s $addr | awk -F '.' '{print $1}')
+# echo $temp	# debug
+
+if (( $temp <= $MAX_OK )) && (( $temp >= $MIN_OK )); then
+    echo "TEMPERATURE OK - $temp°C"
+    exit 0
+elif (( $temp >= $MIN_WARN )) && (( $temp <= $MAX_WARN )); then
+    echo "TEMPERATURE WARNING - $temp°C"
+    exit 1
+elif (( $temp > $MAX_WARN )); then
+    echo "TEMPERATURE CRITICAL - $temp°C"
+    exit 2
+elif (( $temp < $MIN_OK )); then
+    echo "TEMPERATURE UNKNOWN - $temp°C - Something is probably wrong." # There really is no reason for it to be cooler than MIN_OK...
+    exit 3
+else
+    echo "TEMPERATURE UNKNOWN"
+    exit 3
+fi
