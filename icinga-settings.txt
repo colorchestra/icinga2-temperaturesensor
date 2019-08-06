@@ -1,0 +1,24 @@
+### commands.conf
+
+object CheckCommand "room_temperature" {
+        command = [ "/usr/lib/nagios/plugins/check_roomtemp" ]
+        arguments = { 
+                "-a" = "$address$"
+        }
+
+        vars.address = "$address$";
+}
+
+### hosts
+object Host "serverroom" {
+         import "generic-host";
+         address = "127.0.0.1";
+}
+
+### services
+apply Service "temperature" {
+       check_command = "room_temperature";
+       vars.address = "<add-address-here>";
+
+       assign where host.name == "serverroom";
+}
