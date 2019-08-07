@@ -16,20 +16,20 @@ else
     exit 3
 fi
 
-temp=$(curl -s $addr | awk -F '.' '{print $1}')
-# echo $temp	# debug
+temp_full=$(curl -s $addr | tr -d '\r')
+temp=$(echo $temp_full | awk -F '.' '{print $1}')
 
 if (( $temp <= $MAX_OK )) && (( $temp >= $MIN_OK )); then
-    echo "TEMPERATURE OK - $temp°C"
+    echo "TEMPERATURE OK - ${temp_full}°C"
     exit 0
 elif (( $temp >= $MIN_WARN )) && (( $temp <= $MAX_WARN )); then
-    echo "TEMPERATURE WARNING - $temp°C"
+    echo "TEMPERATURE WARNING - $temp_full°C"
     exit 1
 elif (( $temp > $MAX_WARN )); then
-    echo "TEMPERATURE CRITICAL - $temp°C"
+    echo "TEMPERATURE CRITICAL - $temp_full°C"
     exit 2
 elif (( $temp < $MIN_OK )); then
-    echo "TEMPERATURE UNKNOWN - $temp°C - Something is probably wrong." # There really is no reason for it to be cooler than MIN_OK...
+    echo "TEMPERATURE UNKNOWN - $temp_full°C - Something is probably wrong." # There really is no reason for it to be cooler than MIN_OK...
     exit 3
 else
     echo "TEMPERATURE UNKNOWN"
