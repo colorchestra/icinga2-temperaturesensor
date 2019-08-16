@@ -1,4 +1,4 @@
-# icinga2-checktemp
+# icinga2-temperaturesensor
 
 This is an easy and inexpensive way to get a server room temperature monitoring solution without having to buy an expensive, proprietary device or being "vendor locked-in". 
 
